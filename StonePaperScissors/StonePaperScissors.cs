@@ -95,6 +95,8 @@ namespace StonePaperScissors
             }
 
             // Winner announcement
+            Console.WriteLine("Player Score: " + playerPoint + " AI Score: " + AIPoint);
+
             if (playerPoint < AIPoint)
                 Console.WriteLine("AI won the game");
             else if (playerPoint > AIPoint)
