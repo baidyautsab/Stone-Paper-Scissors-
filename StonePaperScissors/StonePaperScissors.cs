@@ -18,34 +18,31 @@ namespace StonePaperScissors
             Console.WriteLine("       Stone-Scissors => Stone");
             Console.WriteLine("       Paper-Scissors => Scissors");
             Console.WriteLine();
-            Console.WriteLine("Winner will get 1 point");
             Console.WriteLine();
-            Console.WriteLine();
+        }
 
-            int count = 0;
+        static int GetAIChoice(Random random)
+        {
+            return random.Next(1, 4);
+        }
 
-            Console.Write("Starting the match");
-
-            // for animation
-            while (count < 3)
+        static int ConvertToChoice(char choice)
+        {
+            switch (choice)
             {
-                Console.Write(".");
-                Thread.Sleep(500);
-                count++;
+                case 'r': return 1; // Stone
+                case 'p': return 2; // Paper
+                case 's': return 3; // Scissors
+                default: return 0; // Invalid choice
             }
-            Console.WriteLine();
         }
 
         static void Main(string[] args)
         {
             WelcomeMsg();
+            System.Threading.Thread.Sleep(2000);
 
             int count = 0;
-            int r = 1, p = 2, s = 3;
-
-            int playerChoice;
-            int AIChoice;
-
             int playerPoint = 0, AIPoint = 0;
 
             Random random = new Random();
@@ -57,69 +54,47 @@ namespace StonePaperScissors
                 Console.WriteLine("p. Paper");
                 Console.WriteLine("s. Scissors");
 
-                string choice = Console.ReadLine();
+                char choice = char.ToLower(Console.ReadKey().KeyChar);
 
-                // convert choice(string) to point
-                if (choice == "r")
-                    playerChoice = r;
-                else if (choice == "p")
-                    playerChoice = p;
-                else if (choice == "s")
-                    playerChoice = s;
-                else
+                Console.WriteLine(); // Move to next line
+
+                int playerChoice = ConvertToChoice(choice);
+
+                if (playerChoice == 0)
                 {
                     Console.WriteLine("Enter a valid choice!");
-                    break;
+                    continue; // Restart the loop
                 }
 
-                AIChoice = random.Next(1, 4);
+                int AIChoice = GetAIChoice(random);
 
-                if (AIChoice == 1)
-                    Console.WriteLine("AI chooses Rock");
-                if (AIChoice == 2)
-                    Console.WriteLine("AI chooses Paper");
-                if (AIChoice == 3)
-                    Console.WriteLine("AI chooses Scissors");
+                switch (AIChoice)
+                {
+                    case 1: Console.WriteLine("AI chooses Rock"); break;
+                    case 2: Console.WriteLine("AI chooses Paper"); break;
+                    case 3: Console.WriteLine("AI chooses Scissors"); break;
+                }
 
-                // calculate score
+                // Calculate score
                 if (playerChoice == AIChoice)
                     Console.WriteLine("Match Draw");
-                else if (playerChoice == r && AIChoice == 2)
+                else if ((playerChoice == 1 && AIChoice == 3) ||
+                         (playerChoice == 2 && AIChoice == 1) ||
+                         (playerChoice == 3 && AIChoice == 2))
+                {
+                    playerPoint++;
+                    Console.WriteLine("You won the round");
+                }
+                else
                 {
                     AIPoint++;
                     Console.WriteLine("AI won the round");
                 }
-                else if (playerChoice == r && AIChoice == 3)
-                {
-                    playerPoint++;
-                    Console.WriteLine("You won the round");
-                }
-                else if (playerChoice == p && AIChoice == 1)
-                {
-                    playerPoint++;
-                    Console.WriteLine("You won the round");
-                }
-                else if (playerChoice == p && AIChoice == 3)
-                {
-                    AIPoint++;
-                    Console.WriteLine("AI won the round");
-                }
-                else if (playerChoice == s && AIChoice == 1)
-                {
-                    AIPoint++;
-                    Console.WriteLine("AI Won the Round");
-                }
-                else if (playerChoice == s && AIChoice == 2)
-                {
-                    playerPoint++;
-                    Console.WriteLine("You won the round");
-                }
+
                 count++;
             }
 
-            // winner announcing
-            Console.WriteLine("Player Score: " + playerPoint + " AI Score: " + AIPoint);
-
+            // Winner announcement
             if (playerPoint < AIPoint)
                 Console.WriteLine("AI won the game");
             else if (playerPoint > AIPoint)
